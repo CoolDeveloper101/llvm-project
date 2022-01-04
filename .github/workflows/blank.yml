@@ -18,16 +18,29 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1
+        with:
+          version: latest
+          platform: x64
+          
+      - uses: seanmiddleditch/gha-setup-ninja@master
           
       - name: Build LLVM
         run: |
           mkdir build
           cd build
-          cmake ../llvm/ -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra"
+          cmake ../llvm/ -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -G Ninja
           cmake --build ../build --target clangd
+          
+      - uses: actions/upload-artifact@v2
+        with:
+          name: clangd
+          path: ./build/bin/clangd.exe
