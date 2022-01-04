@@ -38,7 +38,7 @@ jobs:
           mkdir build
           cd build
           cmake ../llvm/ -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -G Ninja
-          cmake --build ../build --target clangd
+          cmake --build . --target clangd
           
       - uses: actions/upload-artifact@v2
         with:
